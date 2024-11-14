@@ -601,6 +601,28 @@ protected:
 
 
 /*************************************************************************
+// linux/riscv64i
+**************************************************************************/
+
+class PackLinuxElf64riscv : public PackLinuxElf64Le
+{
+    typedef PackLinuxElf64Le super;
+public:
+    PackLinuxElf64riscv(InputFile *f);
+    virtual ~PackLinuxElf64riscv();
+    virtual int getFormat() const override { return UPX_F_LINUX_ELF64_RISCV64; }
+    virtual const char *getName() const override { return "linux/riscv64"; }
+    virtual const char *getFullName(const options_t *) const override { return "riscv64-linux.elf"; }
+    virtual const int *getFilters() const override;
+// protected:
+    virtual void pack1(OutputFile *, Filter &) override;  // generate executable header
+    virtual void buildLoader(const Filter *) override;
+    virtual Linker* newLinker() const override;
+//     virtual void defineSymbols(Filter const *) override;
+};
+
+
+/*************************************************************************
 // linux/elf386
 **************************************************************************/
 

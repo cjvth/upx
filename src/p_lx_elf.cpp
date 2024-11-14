@@ -1129,6 +1129,11 @@ Linker* PackLinuxElf64arm::newLinker() const
     return new ElfLinkerArm64LE;
 }
 
+Linker* PackLinuxElf64riscv::newLinker() const
+{
+    return new ElfLinkerAMD64;
+}
+
 int const *
 PackLinuxElf::getCompressionMethods(int method, int level) const
 {
@@ -1189,6 +1194,14 @@ PackLinuxElf64arm::getFilters() const
 {
     static const int filters[] = {
         0x52,
+    FT_END };
+    return filters;
+}
+
+int const *
+PackLinuxElf64riscv::getFilters() const
+{
+    static const int filters[] = {
     FT_END };
     return filters;
 }
@@ -1335,11 +1348,24 @@ PackLinuxElf64arm::PackLinuxElf64arm(InputFile *f)
     ei_osabi  = Elf32_Ehdr::ELFOSABI_LINUX;
 }
 
+PackLinuxElf64riscv::PackLinuxElf64riscv(InputFile *f)
+    : super(f)
+{
+    e_machine = Elf64_Ehdr::EM_RISCV;
+    ei_class = Elf64_Ehdr::ELFCLASS64;
+    ei_data = Elf64_Ehdr::ELFDATA2LSB;
+    ei_osabi  = Elf32_Ehdr::ELFOSABI_LINUX;
+}
+
 PackLinuxElf64amd::~PackLinuxElf64amd()
 {
 }
 
 PackLinuxElf64arm::~PackLinuxElf64arm()
+{
+}
+
+PackLinuxElf64riscv::~PackLinuxElf64riscv()
 {
 }
 
@@ -1972,6 +1998,25 @@ PackLinuxElf64arm::buildLoader(const Filter *ft)
         stub_arm64_linux_elf_entry, sizeof(stub_arm64_linux_elf_entry),
         stub_arm64_linux_elf_fold,  sizeof(stub_arm64_linux_elf_fold), ft);
 }
+
+static const CLANG_FORMAT_DUMMY_STATEMENT
+#include "stub/riscv64-linux.elf-fold.h"
+
+void
+PackLinuxElf64riscv::buildLoader(const Filter *ft)
+{
+    if (0!=xct_off) {  // shared library
+        buildLinuxLoader(
+            stub_amd64_linux_elf_so_entry, sizeof(stub_amd64_linux_elf_so_entry),
+            stub_riscv64_linux_elf_fold,  sizeof(stub_riscv64_linux_elf_fold), ft);
+        return;
+    }
+    buildLinuxLoader(
+        stub_amd64_linux_elf_entry, sizeof(stub_amd64_linux_elf_entry),
+        stub_riscv64_linux_elf_fold,  sizeof(stub_riscv64_linux_elf_fold), ft);
+}
+
+
 
     // DT_HASH, DT_GNU_HASH have no explicit length (except in ElfXX_Shdr),
     // so it is hard to detect when the index of a hash chain is out-of-bounds.
@@ -4940,6 +4985,15 @@ void PackLinuxElf64arm::pack1(OutputFile *fo, Filter &ft)
     if (0!=xct_off)  // shared library
         return;
     generateElfHdr(fo, stub_arm64_linux_elf_fold, getbrk(phdri, e_phnum) );
+}
+
+
+void PackLinuxElf64riscv::pack1(OutputFile *fo, Filter &ft)
+{
+    super::pack1(fo, ft);
+    if (0!=xct_off)  // shared library
+        return;
+    generateElfHdr(fo, stub_riscv64_linux_elf_fold, getbrk(phdri, e_phnum) );
 }
 
 // Determine length of gap between PT_LOAD phdr[k] and closest PT_LOAD

@@ -568,6 +568,8 @@ using upx::tribool;
 #define UPX_F_W64PE_ARM64         43 // NOT YET IMPLEMENTED
 #define UPX_F_W64PE_ARM64EC       44 // NOT YET IMPLEMENTED
 
+#define UPX_F_LINUX_ELF64_RISCV64 99 
+
 #define UPX_F_ATARI_TOS         129
 // #define UPX_F_SOLARIS_SPARC     130 // NOT IMPLEMENTED
 #define UPX_F_MACH_PPC32        131
