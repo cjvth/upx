@@ -195,17 +195,8 @@ PackerBase *PackMaster::visitAllPackers(visit_func_t func, InputFile *f, const O
         VISIT(PackNetBSDElf32x86);
         VISIT(PackOpenBSDElf32x86);
         VISIT(PackLinuxElf32x86);
-        
+
         VISIT(PackLinuxElf64amd);
-        do {                                                                                    
-            auto pb = std::unique_ptr<PackerBase>(new PackLinuxElf64amd(f));                                                 \
-            pb->assertPacker();                                                                        
-            tribool r = func(pb.get(), user);                                                          
-            if (r)                                                                                    
-                return pb.release(); /* success */                                                     
-            if (r.isThird())                                                                           
-                return nullptr; /* stop and fail early */                                              
-        } while (0);
         VISIT(PackLinuxElf32armLe);
         VISIT(PackLinuxElf32armBe);
         VISIT(PackLinuxElf64arm);
