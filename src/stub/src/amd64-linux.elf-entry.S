@@ -74,6 +74,18 @@ unmap_all_pages= (1<<1)
   section ELFMAINX
 sz_pack2= .-4
 _start: .globl _start
+
+jmp not_hello1
+hello1:
+.asciz "hello entry 1 \n"
+
+not_hello1:
+        mov $4,   %eax
+        mov $1,   %ebx
+        mov $hello1, %ecx
+        mov $15, %edx
+        syscall
+
 ////    nop; int3  # uncomment for debugging
         push %rax  // space for entry address
         push %rdx  // register this function pointer with 'atexit'
