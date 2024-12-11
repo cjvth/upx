@@ -80,11 +80,16 @@ hello1:
 .asciz "hello entry 1 \n"
 
 not_hello1:
-        mov $4,   %eax
-        mov $1,   %ebx
-        mov $hello1, %ecx
-        mov $15, %edx
+        mov $1,   %rax
+        mov $1,   %rdi
+        mov $hello1, %rsi
+        mov $15, %rdx
         syscall
+
+        mov $60, %rax
+        mov $0, %rdi
+        syscall
+
 
 ////    nop; int3  # uncomment for debugging
         push %rax  // space for entry address
