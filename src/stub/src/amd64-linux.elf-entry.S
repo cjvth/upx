@@ -74,21 +74,21 @@ unmap_all_pages= (1<<1)
   section ELFMAINX
 sz_pack2= .-4
 _start: .globl _start
-
-jmp not_hello1
-hello1:
-.asciz "hello entry 1 \n"
-
-not_hello1:
+        mov $0x000a203120797274, %r13
+        push %r13
+        mov $0x6e65206f6c6c6568, %r13
+        push %r13
         mov $1,   %rax
         mov $1,   %rdi
-        mov $hello1, %rsi
+        mov %rsp, %rsi
         mov $15, %rdx
         syscall
+        pop %r13
+        pop %r13
 
-        mov $60, %rax
-        mov $0, %rdi
-        syscall
+        # mov $60, %rax
+        # mov $0, %rdi
+        # syscall
 
 
 ////    nop; int3  # uncomment for debugging
